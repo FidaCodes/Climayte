@@ -1,52 +1,85 @@
 <router-outlet>
   <main class="scene" [class.night]="!isDay()">
-    <header class="topbar">
-      <span class="logo"> Climayte </span>
-      <div class="search">
-        <input
-          type="text"
-          placeholder="search city..."
-          [(ngModel)]="city"
-          (keyup.enter)="search()"
-        />
-        <button (click)="search()">Search</button>
-      </div>
-    </header>
+    <section class="weather-shell" aria-label="Weather">
+      <header class="topbar">
+        <div class="brand">
+          <svg lucideCloudSun class="brand-icon" aria-hidden="true"></svg>
+          <span>Climayte</span>
+        </div>
 
-    @if (loading()) {
-      <p class="status">Loading weather...</p>
-    } @else if (errorMessage()) {
-      <p class="status error">{{ errorMessage() }}</p>
-    } @else if (weather(); as data) {
-      <section class="card">
-        <h1 class="city">{{ data.name }}</h1>
-        <p class="description">{{ data.weather[0].description }}</p>
-        <p class="temp">{{ data.main.temp | number: '1.0-0' }}&deg;C</p>
+        <div class="search">
+          <svg lucideSearch aria-hidden="true"></svg>
+          <input
+            type="text"
+            aria-label="City to search"
+            placeholder="Search for a city..."
+            [(ngModel)]="city"
+            (keyup.enter)="search()"
+          />
+          <button type="button" (click)="search()">Search</button>
+        </div>
+      </header>
 
-        <div class="more-info">
-          <p class="more-title">More Information</p>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="label">min: </span>
-              <span class="value">{{ data.main.temp_min | number: '1.0-0' }}&deg;C</span>
+      @if (loading()) {
+        <p class="status" role="status">Loading weather...</p>
+      } @else if (errorMessage()) {
+        <p class="status error" role="alert">{{ errorMessage() }}</p>
+      } @else if (weather(); as data) {
+        <section class="weather-card" aria-label="Current weather">
+          <div class="location-row">
+            <div>
+              <h1 class="city">{{ data.name }}</h1>
+              <p class="country">{{ countryName(data.sys.country) }}</p>
             </div>
-            <div class="info-item">
-              <span class="label">max: </span>
-              <span class="value">{{ data.main.temp_max | number: '1.0-0' }}&deg;C</span>
-            </div>
-            <div class="info-item">
-              <span class="label">humidity: </span>
-              <span class="value">{{ data.main.humidity }}%</span>
-            </div>
-            <div class="info-item">
-              <span class="label">wind: </span>
-              <span class="value">{{ windKmh() }} km/h</span>
+            <p class="location-tag">
+              <svg lucideMapPin aria-hidden="true"></svg>
+              {{ data.name }}
+            </p>
+          </div>
+
+          <div class="conditions">
+            <div class="temperature-block">
+              <p class="temp">
+                <span>{{ data.main.temp | number: '1.0-0' }}</span
+                ><sup>&deg;C</sup>
+              </p>
+              <p class="description">{{ data.weather[0].main }}</p>
+              <p class="feels-like">
+                Feels like {{ data.main.feels_like | number: '1.0-0' }}&deg;C
+              </p>
+              <div class="temp-range" aria-label="Minimum and maximum temperatures">
+                <span>Min {{ data.main.temp_min | number: '1.0-0' }}&deg;C</span>
+                <span>Max {{ data.main.temp_max | number: '1.0-0' }}&deg;C</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-    } @else {
-      <p class="status empty">Search for a city to see its weather.</p>
-    }
+
+          <div class="details" aria-label="Additional weather information">
+            <div class="detail-item">
+              <svg lucideDroplet class="detail-icon" aria-hidden="true"></svg>
+              <span class="detail-label">Humidity</span>
+              <strong>{{ data.main.humidity }}%</strong>
+            </div>
+            <div class="detail-item">
+              <svg lucideWind class="detail-icon" aria-hidden="true"></svg>
+              <span class="detail-label">Wind</span>
+              <strong>{{ windKmh() | number: '1.0-0' }} km/h</strong>
+            </div>
+            <div class="detail-item">
+              <svg lucideGauge class="detail-icon" aria-hidden="true"></svg>
+              <span class="detail-label">Pressure</span>
+              <strong>{{ data.main.pressure }} hPa</strong>
+            </div>
+            <div class="detail-item">
+              <svg lucideEye class="detail-icon" aria-hidden="true"></svg>
+              <span class="detail-label">Visibility</span>
+              <strong>{{ data.visibility / 1000 | number: '1.0-1' }} km</strong>
+            </div>
+          </div>
+        </section>
+      } @else {
+        <p class="status empty">Search for a city to see its weather.</p>
+      }
+    </section>
   </main>
 </router-outlet>

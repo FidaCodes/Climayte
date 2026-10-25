@@ -1,12 +1,33 @@
-import { Component, computed, inject, Query, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Weather, WeatherData } from './services/weather';
+import {
+  LucideCloudSun,
+  LucideDroplet,
+  LucideEye,
+  LucideGauge,
+  LucideMapPin,
+  LucideSearch,
+  LucideWind,
+} from '@lucide/angular';
+import { Weather } from './services/weather';
+import type { WeatherData } from './models/weather.model';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FormsModule, DecimalPipe],
+  imports: [
+    RouterOutlet,
+    FormsModule,
+    DecimalPipe,
+    LucideCloudSun,
+    LucideDroplet,
+    LucideEye,
+    LucideGauge,
+    LucideMapPin,
+    LucideSearch,
+    LucideWind,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -30,6 +51,10 @@ export class App {
     if (!data) return 0;
     return Math.round(data.wind.speed * 3.6 * 10) / 10;
   });
+
+  countryName(countryCode: string): string {
+    return new Intl.DisplayNames(['en'], { type: 'region' }).of(countryCode) ?? countryCode;
+  }
 
   //search function that fetches the weather result of a city entered by users
   search(): void {

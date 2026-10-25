@@ -2,30 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-//defining a shape (structure) of an object WeatherData
-//kinda like models in Mongoose
-export interface WeatherData {
-  name: string;
-  dt: number;
-  main: {
-    temp: number;
-    temp_min: number;
-    temp_max: number;
-    humidity: number;
-  };
-  wind: {
-    speed: number;
-  };
-  weather: {
-    main: string;
-    description: string;
-  }[];
-  sys: {
-    sunrise: number;
-    sunset: number;
-  };
-}
+import { WeatherData } from '../models/weather.model';
 
 @Injectable({
   providedIn: 'root',
