@@ -13,6 +13,7 @@ import {
 } from '@lucide/angular';
 import { Weather } from './services/weather';
 import type { WeatherData } from './models/weather.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -71,10 +72,16 @@ export class App {
         this.weather.set(data);
         this.loading.set(false);
       },
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.weather.set(null);
         this.loading.set(false);
-        this.errorMessage.set('City not found. Try names like Paris,FR');
+        this.errorMessage.set(
+          error.status === 404
+            ? 'City not found. Check the spelling and try again.'
+            : error.status === 0
+              ? 'Could not connect. Check your internet connection and try again.'
+              : 'Weather could not be loaded. Please try again later.',
+        );
       },
     });
   }
